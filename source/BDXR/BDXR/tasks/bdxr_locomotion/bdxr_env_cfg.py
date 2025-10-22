@@ -43,7 +43,7 @@ from BDXR.robots.bdxr import BDX_CFG  # isort:skip
 
 import BDXR.tasks.bdxr_locomotion.mdp as mdp  # isort:skip
 
-
+# Old Version
 COBBLESTONE_ROAD_CFG = terrain_gen.TerrainGeneratorCfg(
     size=(8.0, 8.0),
     border_width=20.0,
@@ -61,6 +61,29 @@ COBBLESTONE_ROAD_CFG = terrain_gen.TerrainGeneratorCfg(
         ),
     },
 )
+
+#COBBLESTONE_ROAD_CFG = terrain_gen.TerrainGeneratorCfg(
+#    size=(8.0, 8.0),
+#    border_width=20.0,
+#    num_rows=9,
+#    num_cols=21,
+#    horizontal_scale=0.1,
+#    vertical_scale=0.002,  # This is already quite low, which is good for an easier terrain
+#    slope_threshold=0.75,
+#    difficulty_range=(0.0, 1.0),
+#    use_cache=False,
+#    sub_terrains={
+#        # Increase the proportion of flat ground
+#        "flat": terrain_gen.MeshPlaneTerrainCfg(proportion=0.8),
+#        # Decrease the proportion of rough ground
+#        "random_rough": terrain_gen.HfRandomUniformTerrainCfg(
+#            proportion=0.2,
+#            noise_range=(0.02, 0.05),
+#            noise_step=0.02,
+#            border_width=0.25
+#        ),
+#    },
+#)
 
 # TODO: Are all critics necessary (i don't think so) 
 # TODO: In critic we should remove all noise
@@ -198,23 +221,33 @@ class BDXRRewards(RewardsCfg):
     #track_ang_vel_z_exp = RewTerm(
     #    func=mdp.track_ang_vel_z_world_exp, weight=2.5, params={"command_name": "base_velocity", "std": 0.5}
     #)
-    base_angular_velocity = RewTerm(
-        func=mdp.base_angular_velocity_reward,
-        weight=5.0,
-        params={"std": 2.0, "asset_cfg": SceneEntityCfg("robot")},
-    )
     base_linear_velocity = RewTerm(
         func=mdp.base_linear_velocity_reward,
         weight=5.0,
         params={"std": 1.0, "ramp_rate": 0.5, "ramp_at_vel": 1.0, "asset_cfg": SceneEntityCfg("robot")},
     )
+    base_angular_velocity = RewTerm(
+        func=mdp.base_angular_velocity_reward,
+        weight=2.5,
+        params={"std": 2.0, "asset_cfg": SceneEntityCfg("robot")},
+    )
     feet_air_time = RewTerm(
         func=mdp.feet_air_time_positive_biped,
-        weight=5.0,
+        weight=0.0,
         params={
             "command_name": "base_velocity",
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_Foot"),
             "threshold": 0.2,
+        },
+    )
+    air_time = RewTerm(
+        func=mdp.bipedal_air_time_reward,
+        weight=3.0,
+        params={
+            "mode_time": 0.5,
+            "velocity_threshold": 0.1,
+            "asset_cfg": SceneEntityCfg("robot"),
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_Foot"),
         },
     )
     feet_slide = RewTerm(
@@ -223,6 +256,15 @@ class BDXRRewards(RewardsCfg):
         params={
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_Foot"),
             "asset_cfg": SceneEntityCfg("robot", body_names=".*_Foot"),
+        },
+    )
+    joint_pos = RewTerm(
+        func=mdp.joint_position_penalty,
+        weight=1.0, # Or -5.0 if you use the original function
+        params={
+            "asset_cfg": SceneEntityCfg("robot", joint_names=".*"),
+            "stand_still_scale": 20.0,  # <-- Increase this value substantially
+            "velocity_threshold": 0.1,
         },
     )
 
@@ -235,14 +277,35 @@ class BDXRRewards(RewardsCfg):
     # Penalize deviation from default of the joints that are not essential for locomotion
     joint_deviation_hip = RewTerm(
         func=mdp.joint_deviation_l1,
-        weight=-2,
+        weight=-1,
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*_Hip_Yaw", ".*_Hip_Roll"])},
+    )
+    joint_deviation_ankle = RewTerm(
+        func=mdp.joint_deviation_l1,
+        weight=-0.5,
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*_Ankle"])},
     )
     #base_height_l2 = RewTerm(
     #    func=mdp.base_height_l2,
     #    weight=-1.5,  # Negative weight to create a penalty
     #    params={"target_height": 0.3}  # IMPORTANT: Set this to your robot's desired base height in meters
     #)
+    foot_clearance = RewTerm(
+        func=mdp.foot_clearance_reward,
+        weight=5,
+        params={
+            "std": 0.05,
+            "tanh_mult": 2.0,
+            "target_height": 0.2,
+            "asset_cfg": SceneEntityCfg("robot", body_names=".*_Foot"),
+        },
+    )
+    base_motion = RewTerm(
+        func=mdp.base_motion_penalty, weight=-2.0, params={"asset_cfg": SceneEntityCfg("robot")}
+    )
+    base_orientation = RewTerm(
+        func=mdp.base_orientation_penalty, weight=-3.0, params={"asset_cfg": SceneEntityCfg("robot")}
+    )
 
 # TODO: With the way it's implemented, it is not used, should we remove it or use itS
 @configclass
@@ -251,7 +314,7 @@ class EventCfg:
     # startup
     physics_material = EventTerm(
         func=mdp.randomize_rigid_body_material,
-        mode="reset",
+        mode="startup",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=".*"),
             "static_friction_range": (0.8, 0.8),
@@ -263,23 +326,13 @@ class EventCfg:
 
     add_base_mass = EventTerm(
         func=mdp.randomize_rigid_body_mass,
-        mode="reset",
+        mode="startup",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names="base"),
-            "mass_distribution_params": (-1.0, 1.0),
+            "mass_distribution_params": (-5.0, 5.0),
             "operation": "add",
         },
     )
-    randomize_com_positions = EventTerm(
-        func=mdp.randomize_rigid_body_com,
-        mode="startup",
-        params={
-            "asset_cfg": SceneEntityCfg("robot", body_names=".*"),
-            "com_range": {"x": (-0.05, 0.05), "y": (-0.05, 0.05), "z": (-0.05, 0.05)},
-        },
-    )
-
-    # reset
     base_external_force_torque = EventTerm(
         func=mdp.apply_external_force_torque,
         mode="reset",
@@ -289,43 +342,22 @@ class EventCfg:
             "torque_range": (-0.0, 0.0),
         },
     )
-    randomize_actuator_gains = EventTerm(
-        func=mdp.randomize_actuator_gains,
-        mode="reset",
-        params={
-            "asset_cfg": SceneEntityCfg("robot", joint_names=".*"),
-            "operation": "scale",
-            "stiffness_distribution_params": (0.6, 1.4),
-            "damping_distribution_params": (0.6, 1.4),
-        },
-    )
-    randomize_joint_parameters = EventTerm(
-        func=mdp.randomize_joint_parameters,
-        mode="reset",
-        params={
-            "asset_cfg": SceneEntityCfg("robot", joint_names=".*"),
-            "operation": "scale",
-            "friction_distribution_params": (0.8, 1.2),
-            "armature_distribution_params": (0.8, 1.2),
-        },
-    )
-
     reset_base = EventTerm(
         func=mdp.reset_root_state_uniform,
         mode="reset",
         params={
             "pose_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (-3.14, 3.14)},
             "velocity_range": {
-                "x": (-0.5, 0.5),
-                "y": (-0.5, 0.5),
-                "z": (-0.5, 0.5),
-                "roll": (-0.5, 0.5),
-                "pitch": (-0.5, 0.5),
-                "yaw": (-0.5, 0.5),
+                "x": (0.0, 0.0),
+                "y": (0.0, 0.0),
+                "z": (0.0, 0.0),
+                "roll": (0.0, 0.0),
+                "pitch": (0.0, 0.0),
+                "yaw": (0.0, 0.0),
             },
         },
     )
-
+#
     reset_robot_joints = EventTerm(
         func=mdp.reset_joints_by_scale,
         mode="reset",
@@ -334,8 +366,6 @@ class EventCfg:
             "velocity_range": (0.0, 0.0),
         },
     )
-
-    # interval
     push_robot = EventTerm(
         func=mdp.push_by_setting_velocity,
         mode="interval",
@@ -371,7 +401,7 @@ class BdxrEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # events
         self.events.push_robot.params["velocity_range"] = {"x": (-0.1, 0.1), "y": (-0.1, 0.1)}
-        # self.events.push_robot = None
+        #self.events.push_robot = None
         self.events.add_base_mass.params["asset_cfg"].body_names = ["base_link"]
         self.events.add_base_mass.params["mass_distribution_params"] = (-0.5, 0.5)
         self.events.reset_robot_joints.params["position_range"] = (0.8, 1.2)
@@ -464,4 +494,7 @@ class BdxrEnvCfg_PLAY(BdxrEnvCfg):
 
         # disable randomization for play
         self.observations.policy.enable_corruption = False
+        self.commands.base_velocity.ranges.lin_vel_x = (0.3, 0.3)
+        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
+        self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0)
         # remove random pushing event

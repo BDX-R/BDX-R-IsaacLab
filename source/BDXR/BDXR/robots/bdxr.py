@@ -36,7 +36,7 @@ BDX_CFG = ArticulationCfg(
         ),
     ),
     init_state=ArticulationCfg.InitialStateCfg(
-        pos=(0.0, 0.0, 0.30846),
+        pos=(0.0, 0.0, 0.33),
     ),
     actuators={
         "legs": DelayedPDActuatorCfg(

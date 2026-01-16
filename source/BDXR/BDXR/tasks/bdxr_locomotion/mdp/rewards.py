@@ -120,7 +120,188 @@ def foot_clearance_reward(
     # The final reward is the clearance reward scaled by the walking gate.
     return clearance_reward * walking_gate
 
+def swing_foot_clearance_reward(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg,
+    target_height: float,
+    speed_threshold: float,  # We'll use a simple speed check instead of tanh
+    std: float,
+) -> torch.Tensor:
+    """
+    Rewards each swinging foot based on how close it is to a target height.
+    Feet that are not swinging (i.e., on the ground) receive zero reward.
+    """
+    asset: RigidObject = env.scene[asset_cfg.name]
 
+    # Get the Z-position (height) of the feet
+    foot_heights = asset.data.body_pos_w[:, asset_cfg.body_ids, 2]
+    # Get the horizontal (XY) speed of the feet
+    foot_velocities_norm = torch.norm(asset.data.body_lin_vel_w[:, asset_cfg.body_ids, :2], dim=2)
+
+    # --- NEW, SIMPLER LOGIC ---
+
+    # 1. Identify which feet are swinging
+    # A foot is considered "swinging" if its horizontal speed is above a threshold.
+    # This results in a tensor of 1s (swinging) and 0s (not swinging).
+    is_swinging = (foot_velocities_norm > speed_threshold).float()
+
+    # 2. Calculate the height-based reward for ALL feet
+    # This reward is highest (1.0) when the foot is exactly at the target height.
+    height_error = torch.square(foot_heights - target_height)
+    height_reward = torch.exp(-height_error / std)
+
+    # 3. Apply the reward ONLY to the swinging feet
+    # Multiply the height reward by the "is_swinging" mask.
+    # If a foot is not swinging, its reward becomes height_reward * 0 = 0.
+    reward = height_reward * is_swinging
+
+    # 4. Sum the rewards from all feet for the final result
+    return torch.sum(reward, dim=1)
+
+def conditional_joint_deviation_penalty(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg,
+    command_name: str,
+    velocity_threshold: float,
+) -> torch.Tensor:
+    """
+    Penalizes joint position deviation from the default pose, but ONLY when the
+    commanded velocity is below a threshold. This stops fidgeting.
+    """
+    # 1. Check the command to see if we should be standing still.
+    commands = env.command_manager.get_command(command_name)
+    command_magnitude = torch.norm(commands, dim=1)
+    is_standing_command = (command_magnitude < velocity_threshold)
+
+    # 2. Calculate the joint deviation penalty for ALL environments.
+    # This measures how far each joint is from its default "standing" position.
+    asset: Articulation = env.scene[asset_cfg.name]
+    joint_deviation = torch.sum(torch.square(asset.data.joint_pos - asset.data.default_joint_pos), dim=1)
+
+    # 3. Apply the penalty ONLY to the environments that are commanded to stand still.
+    # This is an IF statement: IF is_standing_command is True, THEN penalty = joint_deviation, ELSE penalty = 0.
+    penalty = torch.where(is_standing_command, joint_deviation, 0.0)
+
+    return penalty
+
+def air_time_variance_penalty(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
+    """Penalize variance in the amount of time each foot spends in the air/on the ground relative to each other"""
+    # extract the used quantities (to enable type-hinting)
+    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+    if contact_sensor.cfg.track_air_time is False:
+        raise RuntimeError("Activate ContactSensor's track_air_time!")
+    # compute the reward
+    last_air_time = contact_sensor.data.last_air_time[:, sensor_cfg.body_ids]
+    last_contact_time = contact_sensor.data.last_contact_time[:, sensor_cfg.body_ids]
+    return torch.var(torch.clip(last_air_time, max=0.5), dim=1) + torch.var(
+        torch.clip(last_contact_time, max=0.5), dim=1
+    )
+def joint_deviation_l1(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+    """Penalize joint positions that deviate from the default one."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    angle = asset.data.joint_pos[:, asset_cfg.joint_ids] - asset.data.default_joint_pos[:, asset_cfg.joint_ids]
+    return torch.sum(torch.abs(angle), dim=1)
+
+def low_speed_sway_penalty(
+    env: ManagerBasedRLEnv, command_name: str, command_threshold: float, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
+) -> torch.Tensor:
+    """Penalize linear and angular velocities when command velocity is below threshold."""
+    asset: RigidObject = env.scene[asset_cfg.name]
+    command = env.command_manager.get_command(command_name)
+    command_speed = torch.norm(command[:, :2], dim=1)
+    
+    lin_vel_penalty = torch.sum(torch.square(asset.data.root_lin_vel_b[:, :2]), dim=1)
+    ang_vel_penalty = torch.sum(torch.square(asset.data.root_ang_vel_b), dim=1)
+    vel_penalty = lin_vel_penalty + ang_vel_penalty
+    
+    return vel_penalty * (command_speed < command_threshold).float()
+
+# ADD PROVEN PENALTY 2 (The "Limb Guard"):
+def stand_still_joint_deviation_l1(
+    env: ManagerBasedRLEnv, command_name: str, command_threshold: float, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
+) -> torch.Tensor:
+    """Penalize offsets from the default joint positions when the command is very small."""
+    command = env.command_manager.get_command(command_name)
+    # This uses the helper function we just added
+    return joint_deviation_l1(env, asset_cfg) * (torch.norm(command[:, :2], dim=1) < command_threshold)
+
+def command_and_contact_gated_foot_clearance(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg,
+    sensor_cfg: SceneEntityCfg,
+    command_name: str,
+    velocity_threshold: float,
+    target_height: float,
+    contact_threshold: float,
+    std: float,
+) -> torch.Tensor:
+    """
+    Rewards foot clearance ONLY if the robot is commanded to move AND the foot is in the air.
+    This is the ultimate version that prevents all known exploits (scraping, wiggling in place).
+    """
+    # -- GATE 1: Is the robot commanded to move? --
+    commands = env.command_manager.get_command(command_name)
+    command_magnitude = torch.norm(commands, dim=1)
+    # Create a mask: 1.0 if commanded to move, 0.0 if commanded to stand still.
+    is_walking_command = (command_magnitude > velocity_threshold).float()
+
+    # If all environments are standing, we can exit early and return zero.
+    if torch.all(is_walking_command == 0.0):
+        return torch.zeros_like(is_walking_command)
+
+    # -- GATE 2: Is the foot physically in the air? --
+    asset: Articulation = env.scene[asset_cfg.name]
+    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+    foot_forces = contact_sensor.data.net_forces_w[:, sensor_cfg.body_ids]
+    foot_force_magnitudes = torch.norm(foot_forces, dim=-1)
+    is_in_air = (foot_force_magnitudes < contact_threshold).float()
+
+    # -- Calculate the reward --
+    foot_heights = asset.data.body_pos_w[:, asset_cfg.body_ids, 2]
+    height_error = torch.square(foot_heights - target_height)
+    height_reward = torch.exp(-height_error / std)
+
+    # Apply the reward only to feet that are in the air
+    clearance_reward_per_foot = height_reward * is_in_air
+    # Sum the reward across the feet
+    total_clearance_reward = torch.sum(clearance_reward_per_foot, dim=1)
+
+    # -- Final Gating --
+    # The final reward is the clearance reward, multiplied by our command gate.
+    # If the command was to stand still, this entire reward becomes zero.
+    return total_clearance_reward * is_walking_command
+
+def stand_still_penalty(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg,
+    command_name: str,
+    velocity_threshold: float,
+) -> torch.Tensor:
+    """
+    Applies a strong penalty for any base motion if the commanded velocity is below a threshold.
+    This heavily incentivizes the robot to be perfectly still when commanded to stand.
+    """
+    # 1. Get the commanded velocity and its magnitude
+    commands = env.command_manager.get_command(command_name)
+    command_magnitude = torch.norm(commands, dim=1)
+
+    # 2. Identify which environments are commanded to stand still
+    is_standing_command = (command_magnitude < velocity_threshold)
+
+    # 3. Get the robot's actual base linear and angular velocity
+    asset: RigidObject = env.scene[asset_cfg.name]
+    base_lin_vel = asset.data.root_lin_vel_b
+    base_ang_vel = asset.data.root_ang_vel_b
+
+    # 4. Calculate the magnitude of the actual motion
+    # We penalize both linear and angular movement.
+    motion_magnitude = torch.norm(base_lin_vel, dim=1) + torch.norm(base_ang_vel, dim=1)
+
+    # 5. Apply the penalty ONLY to the environments commanded to stand still
+    # The penalty is the magnitude of the motion. If not commanded to stand, penalty is 0.
+    penalty = torch.where(is_standing_command, motion_magnitude, 0.0)
+
+    return penalty
 
 def bipedal_air_time_reward(
     env: ManagerBasedRLEnv,
@@ -166,18 +347,13 @@ def joint_position_penalty(
     env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, stand_still_scale: float, velocity_threshold: float
 ) -> torch.Tensor:
     """Penalize joint position error from default on the articulation."""
+    # extract the used quantities (to enable type-hinting)
     asset: Articulation = env.scene[asset_cfg.name]
-    cmd_norm = torch.linalg.norm(env.command_manager.get_command("base_velocity"), dim=1)
+    cmd = torch.linalg.norm(env.command_manager.get_command("base_velocity"), dim=1)
+    body_vel = torch.linalg.norm(asset.data.root_lin_vel_b[:, :2], dim=1)
+    reward = torch.linalg.norm((asset.data.joint_pos - asset.data.default_joint_pos), dim=1)
+    return torch.where(torch.logical_or(cmd > 0.0, body_vel > velocity_threshold), reward, stand_still_scale * reward)
 
-    # Calculate the penalty (deviation from default pose)
-    joint_pos_error = torch.linalg.norm((asset.data.joint_pos - asset.data.default_joint_pos), dim=1)
-
-    # When the command is to stand still, apply a much larger penalty
-    # The penalty is negative because we want to discourage this behavior.
-    penalty = -joint_pos_error
-    scaled_penalty = -stand_still_scale * joint_pos_error
-
-    return torch.where(cmd_norm < velocity_threshold, scaled_penalty, penalty)
 
 
 # ! look into simplifying the kernel here; it's a little oddly complex

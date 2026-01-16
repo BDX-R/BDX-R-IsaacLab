@@ -2,7 +2,7 @@
 # All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
-
+import math
 from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.utils import configclass
@@ -19,6 +19,7 @@ from isaaclab.managers import ObservationGroupCfg as ObsGroup
 from isaaclab.managers import ObservationTermCfg as ObsTerm
 from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
 from isaaclab.sensors import ImuCfg
+from isaaclab.managers import TerminationTermCfg as DoneTerm
 #from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -187,7 +188,7 @@ class ObservationsCfg:
         """Observations for policy group."""
 
         # observation terms (order preserved)
-        imu_ang_vel = ObsTerm(func=mdp.imu_ang_vel, noise=Unoise(n_min=-0.1, n_max=0.1))
+        imu_ang_vel = ObsTerm(func=mdp.imu_ang_vel, noise=Unoise(n_min=-0.35, n_max=0.35))
 
         # TODO: Adds IMu Projected Gravity
         imu_projected_gravity = ObsTerm(
@@ -196,7 +197,7 @@ class ObservationsCfg:
         )
         velocity_commands = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
         joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=Unoise(n_min=-0.05, n_max=0.05))
-        joint_vel = ObsTerm(func=mdp.joint_vel_rel, noise=Unoise(n_min=-0.5, n_max=0.5))
+        joint_vel = ObsTerm(func=mdp.joint_vel_rel, noise=Unoise(n_min=-1.5, n_max=1.5))
         actions = ObsTerm(func=mdp.last_action)
 
         def __post_init__(self):
@@ -213,24 +214,24 @@ class BDXRRewards(RewardsCfg):
     """Reward terms for the MDP."""
 
     termination_penalty = RewTerm(func=mdp.is_terminated, weight=-200.0)
-    #track_lin_vel_xy_exp = RewTerm(
-    #    func=mdp.track_lin_vel_xy_yaw_frame_exp,
+    track_lin_vel_xy_exp = RewTerm(
+        func=mdp.track_lin_vel_xy_yaw_frame_exp,
+        weight=10.0,
+        params={"command_name": "base_velocity", "std": 0.5},
+    )
+    track_ang_vel_z_exp = RewTerm(
+        func=mdp.track_ang_vel_z_world_exp, weight=2.5, params={"command_name": "base_velocity", "std": 0.5}
+    )
+    #base_linear_velocity = RewTerm(
+    #    func=mdp.base_linear_velocity_reward,
     #    weight=5.0,
-    #    params={"command_name": "base_velocity", "std": 0.5},
+    #    params={"std": 1.0, "ramp_rate": 0.5, "ramp_at_vel": 1.0, "asset_cfg": SceneEntityCfg("robot")},
     #)
-    #track_ang_vel_z_exp = RewTerm(
-    #    func=mdp.track_ang_vel_z_world_exp, weight=2.5, params={"command_name": "base_velocity", "std": 0.5}
+    #base_angular_velocity = RewTerm(
+    #    func=mdp.base_angular_velocity_reward,
+    #    weight=2.5,
+    #    params={"std": 2.0, "asset_cfg": SceneEntityCfg("robot")},
     #)
-    base_linear_velocity = RewTerm(
-        func=mdp.base_linear_velocity_reward,
-        weight=5.0,
-        params={"std": 1.0, "ramp_rate": 0.5, "ramp_at_vel": 1.0, "asset_cfg": SceneEntityCfg("robot")},
-    )
-    base_angular_velocity = RewTerm(
-        func=mdp.base_angular_velocity_reward,
-        weight=2.5,
-        params={"std": 2.0, "asset_cfg": SceneEntityCfg("robot")},
-    )
     feet_air_time = RewTerm(
         func=mdp.feet_air_time_positive_biped,
         weight=0.0,
@@ -260,11 +261,11 @@ class BDXRRewards(RewardsCfg):
     )
     joint_pos = RewTerm(
         func=mdp.joint_position_penalty,
-        weight=1.0, # Or -5.0 if you use the original function
+        weight=-1.0, # Or -5.0 if you use the original function
         params={
             "asset_cfg": SceneEntityCfg("robot", joint_names=".*"),
-            "stand_still_scale": 20.0,  # <-- Increase this value substantially
-            "velocity_threshold": 0.1,
+            "stand_still_scale": 5.0,  # <-- Increase this value substantially
+            "velocity_threshold": 0.3,
         },
     )
 
@@ -290,19 +291,33 @@ class BDXRRewards(RewardsCfg):
         weight=-0.5,
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*_Ankle"])},
     )
-    #base_height_l2 = RewTerm(
-    #    func=mdp.base_height_l2,
-    #    weight=-1.5,  # Negative weight to create a penalty
-    #    params={"target_height": 0.3}  # IMPORTANT: Set this to your robot's desired base height in meters
-    #)
-    foot_clearance = RewTerm(
-        func=mdp.foot_clearance_reward,
-        weight=5,
+    sway_penalty = RewTerm(
+        func=mdp.low_speed_sway_penalty,
+        weight=-10.0, # A huge penalty for any torso movement when commanded to be still.
+        params={ "command_name": "base_velocity", "command_threshold": 0.1 }
+    )
+    fidget_penalty = RewTerm(
+        func=mdp.stand_still_joint_deviation_l1,
+        weight=-5.0,  # A strong penalty for any joint fidgeting when commanded to be still.
         params={
-            "std": 0.05,
-            "tanh_mult": 2.0,
-            "target_height": 0.2,
+            "asset_cfg": SceneEntityCfg("robot", joint_names=".*"),
+            "command_name": "base_velocity",
+            "command_threshold": 0.1,
+        }
+    )
+    foot_clearance = RewTerm(
+        func=mdp.command_and_contact_gated_foot_clearance,
+        weight=5.0,
+        params={
+            # NO resolve_ids=True here. The framework does it automatically.
             "asset_cfg": SceneEntityCfg("robot", body_names=".*_Foot"),
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_Foot"),
+
+            "command_name": "base_velocity",
+            "velocity_threshold": 0.05,
+            "target_height": 0.15,
+            "contact_threshold": 1.0,
+            "std": 0.05,
         },
     )
     base_motion = RewTerm(
@@ -311,7 +326,13 @@ class BDXRRewards(RewardsCfg):
     base_orientation = RewTerm(
         func=mdp.base_orientation_penalty, weight=-3.0, params={"asset_cfg": SceneEntityCfg("robot")}
     )
-
+    rhythm_penalty = RewTerm(
+        func=mdp.air_time_variance_penalty,
+        weight=-2.0,  # Start with a moderate penalty
+        params={
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_Foot"),
+        }
+    )
 # TODO: With the way it's implemented, it is not used, should we remove it or use itS
 @configclass
 class EventCfg:
@@ -375,15 +396,62 @@ class EventCfg:
         func=mdp.push_by_setting_velocity,
         mode="interval",
         interval_range_s=(10.0, 15.0),
-        params={"velocity_range": {"x": (-0.1, 0.1), "y": (-0.1, 0.1)}},
+        params={"velocity_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5)}},
+    )
+    scale_actuator_gains = EventTerm(
+        func=mdp.randomize_actuator_gains,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", joint_names=[".*"]),
+            "stiffness_distribution_params": (0.8, 1.2),
+            "damping_distribution_params": (0.8, 1.2),
+            "operation": "scale",
+        },
+    )
+    scale_joint_parameters = EventTerm(
+        func=mdp.randomize_joint_parameters,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", joint_names=[".*"]),
+            "friction_distribution_params": (1.0, 1.0),
+            "armature_distribution_params": (0.8, 1.2),
+            "operation": "scale",
+        },
+    )
+    randomize_rigid_body_com = EventTerm(
+        func=mdp.randomize_rigid_body_com,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=["base_link"]),
+            "com_range": {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "z": (-0.03, 0.03)}, # 0.02
+        },
     )
 
+    
+
+@configclass
+class TerminationsCfg:
+    """Termination terms for the MDP."""
+
+    time_out = DoneTerm(func=mdp.time_out, time_out=True)
+    base_contact = DoneTerm(
+        func=mdp.illegal_contact,
+        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names="base_link"), "threshold": 1.0},
+    )
+    base_height = DoneTerm(func=mdp.root_height_below_minimum, params={"minimum_height": 0.25})
+    bad_orientation = DoneTerm(
+        func=mdp.bad_orientation, 
+        params={
+            "limit_angle": math.radians(60.0),
+        },
+    )
 # TODO: clean this up
 @configclass
 class BdxrEnvCfg(LocomotionVelocityRoughEnvCfg):
     rewards: BDXRRewards = BDXRRewards()
     observations: ObservationsCfg = ObservationsCfg()
     events: EventCfg = EventCfg()
+    terminations: TerminationsCfg = TerminationsCfg()
 
     def __post_init__(self):
         # post init of parent
@@ -402,17 +470,17 @@ class BdxrEnvCfg(LocomotionVelocityRoughEnvCfg):
             )
         )
         # actions
-        self.actions.joint_pos.scale = 0.5
+        self.actions.joint_pos.scale = 0.25
 
         # events
-        self.events.push_robot.params["velocity_range"] = {"x": (-0.1, 0.1), "y": (-0.1, 0.1)}
+        self.events.push_robot.params["velocity_range"] = {"x": (-0.5, 0.5), "y": (-0.5, 0.5)}
         #self.events.push_robot = None
         self.events.add_base_mass.params["asset_cfg"].body_names = ["base_link"]
         self.events.add_base_mass.params["mass_distribution_params"] = (-0.5, 0.5)
         self.events.reset_robot_joints.params["position_range"] = (0.8, 1.2)
         self.events.base_external_force_torque.params["asset_cfg"].body_names = ["base_link"]
-        self.events.physics_material.params["static_friction_range"] = (0.1, 2)
-        self.events.physics_material.params["dynamic_friction_range"] = (0.1, 2)
+        self.events.physics_material.params["static_friction_range"] = (0.3, 1.6)
+        self.events.physics_material.params["dynamic_friction_range"] = (0.3, 1.2)
         self.events.physics_material.params["asset_cfg"].body_names = ".*_Foot"
         # terrain
         # TODO: This does not need to be fully placed, we can do the same in 3 line
@@ -467,13 +535,14 @@ class BdxrEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.dof_torques_l2.params["asset_cfg"] = SceneEntityCfg(
             "robot", joint_names=[".*_Hip_.*", ".*_Knee", ".*_Ankle.*"]
         )
-        self.rewards.track_lin_vel_xy_exp = None
-        self.rewards.track_ang_vel_z_exp = None
+        #self.rewards.track_lin_vel_xy_exp = None
+        #self.rewards.track_ang_vel_z_exp = None
 
         # Commands
         self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.7)
         self.commands.base_velocity.ranges.lin_vel_y = (-0.4, 0.4)
         self.commands.base_velocity.ranges.ang_vel_z = (-0.0, 0.0)
+        self.commands.base_velocity.rel_standing_envs = 0.1
 
         # terminations
         self.terminations.base_contact.params["sensor_cfg"].body_names = "base_link"
@@ -500,6 +569,6 @@ class BdxrEnvCfg_PLAY(BdxrEnvCfg):
         # disable randomization for play
         self.observations.policy.enable_corruption = False
         self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.0)
-        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
+        self.commands.base_velocity.ranges.lin_vel_y = (-0.4, 0.4)
         self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0)
         # remove random pushing event

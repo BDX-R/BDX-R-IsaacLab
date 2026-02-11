@@ -88,7 +88,8 @@ from isaaclab.envs import (
     multi_agent_to_single_agent,
 )
 from isaaclab.utils.dict import print_dict
-from isaaclab.utils.io import dump_pickle, dump_yaml
+import pickle
+import yaml 
 
 from isaaclab_rl.rsl_rl import RslRlBaseRunnerCfg, RslRlVecEnvWrapper
 
@@ -103,6 +104,21 @@ torch.backends.cudnn.allow_tf32 = True
 torch.backends.cudnn.deterministic = False
 torch.backends.cudnn.benchmark = False
 
+# --- Helper functions to replace removed isaaclab.utils.io functions ---
+def dump_pickle(filename, data):
+    """Saves data to a pickle file, creating the directory if needed."""
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, "wb") as f:
+        pickle.dump(data, f)
+
+def dump_yaml(filename, data):
+    """Saves data to a yaml file, creating the directory if needed."""
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    if hasattr(data, "to_dict"):
+        data = data.to_dict()
+    with open(filename, "w") as f:
+        yaml.dump(data, f, default_flow_style=False, sort_keys=False)
+# -----------------------------------------------------------------------
 
 @hydra_task_config(args_cli.task, args_cli.agent)
 def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agent_cfg: RslRlBaseRunnerCfg):
@@ -192,6 +208,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         runner.load(resume_path)
 
     # dump the configuration into log-directory
+    # Used helper functions defined above to avoid IO errors
     dump_yaml(os.path.join(log_dir, "params", "env.yaml"), env_cfg)
     dump_yaml(os.path.join(log_dir, "params", "agent.yaml"), agent_cfg)
     dump_pickle(os.path.join(log_dir, "params", "env.pkl"), env_cfg)

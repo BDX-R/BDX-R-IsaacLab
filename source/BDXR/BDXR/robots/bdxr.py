@@ -9,12 +9,16 @@ from isaaclab.assets.articulation import ArticulationCfg
 ##
 # Configuration
 ##
+TEMPLATE_ASSETS_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
 BDX_CFG = ArticulationCfg(
     # TODO: Change by the URDF directly by adding in the installation setup, the need to curl
     # It will reduce the weight of this repository
-    spawn=sim_utils.UsdFileCfg(
-        usd_path=f"{TEMPLATE_ASSETS_DATA_DIR}/Robots/BDXR/BDX-R.usd",
+    spawn=sim_utils.UrdfFileCfg(
+        fix_base=False,
+        merge_fixed_joints=True,
+        replace_cylinders_with_capsules=False,
+        asset_path=f"{TEMPLATE_ASSETS_DATA_DIR}/Robots/BDXR/URDF.urdf",
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
@@ -28,14 +32,17 @@ BDX_CFG = ArticulationCfg(
         articulation_props=sim_utils.ArticulationRootPropertiesCfg(
             enabled_self_collisions=False, solver_position_iteration_count=4, solver_velocity_iteration_count=0
         ),
+        joint_drive=sim_utils.UrdfConverterCfg.JointDriveCfg(
+            gains=sim_utils.UrdfConverterCfg.JointDriveCfg.PDGainsCfg(stiffness=0, damping=0)
+        ),
     ),
     init_state=ArticulationCfg.InitialStateCfg(
-        pos=(0.0, 0.0, 0.30846),
+        pos=(0.0, 0.0, 0.33),
     ),
     actuators={
-        # TODO: Implement these gains as formula, to understand better where it come from (mention BeyondMimic inspiration)
         "legs": DelayedPDActuatorCfg(
             joint_names_expr=[".*_Hip_Yaw", ".*_Hip_Roll", ".*_Hip_Pitch", ".*_Knee", ".*_Ankle"],
+            # ... (all leg parameters remain unchanged)
             stiffness={
                 ".*_Hip_Yaw": 78.0,
                 ".*_Hip_Roll": 78.0,
@@ -71,9 +78,46 @@ BDX_CFG = ArticulationCfg(
                 ".*_Knee": 18.849,
                 ".*_Ankle": 37.699,
             },
-            min_delay=0,  # physics time steps (min: 2.0*0=0.0ms)
+            min_delay=0,
             max_delay=4
         ),
+        # -- START OF NEW SECTION --
+        "head": DelayedPDActuatorCfg(
+            joint_names_expr=["Neck_Pitch", "Head_Pitch", "Head_Yaw", "Head_Roll"],
+            stiffness={
+                "Neck_Pitch": 17.0,
+                "Head_Pitch": 2.76,
+                "Head_Yaw": 2.76,
+                "Head_Roll": 2.76,
+            },
+            damping={
+                "Neck_Pitch": 1.0,
+                "Head_Pitch": 0.176,
+                "Head_Yaw": 0.176,
+                "Head_Roll": 0.176,
+            },
+            armature={
+                "Neck_Pitch": 0.0042,
+                "Head_Pitch": 0.0007,
+                "Head_Yaw": 0.0007,
+                "Head_Roll": 0.0007,
+            },
+            effort_limit_sim={      # These values should come from your URDF file
+                "Neck_Pitch": 11.9,
+                "Head_Pitch": 4.2,
+                "Head_Yaw": 4.2,
+                "Head_Roll": 4.2,
+            },
+            velocity_limit_sim={    # These values should come from your URDF file
+                "Neck_Pitch": 43.0,
+                "Head_Pitch": 45.0,
+                "Head_Yaw": 45.0,
+                "Head_Roll": 45.0,
+            },
+            min_delay=0,
+            max_delay=4
+        ),
+        # -- END OF NEW SECTION --
     },
     soft_joint_pos_limit_factor=0.95,
 )

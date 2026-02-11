@@ -466,7 +466,7 @@ class BdxrEnvCfg(LocomotionVelocityRoughEnvCfg):
         # CORRECT IMU CONFIGURATION
         self.scene.imu = ImuCfg(
             prim_path="{ENV_REGEX_NS}/Robot/base_link",  # Attach to the actual rigid body
-            debug_vis=True,
+            debug_vis=False,
             offset=ImuCfg.OffsetCfg(  # Use the nested OffsetCfg class
                 pos=(-0.04718, 0.0663, 0.11094),    # From your screenshot
                 rot=(1.0, 0.0, 0.0, 0.0),           # (w, x, y, z) for no rotation
@@ -504,7 +504,7 @@ class BdxrEnvCfg(LocomotionVelocityRoughEnvCfg):
                 project_uvw=True,
                 texture_scale=(0.25, 0.25),
             ),
-            debug_vis=True,
+            debug_vis=False,
         )
 
         # Randomization

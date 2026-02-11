@@ -43,6 +43,21 @@ To install the necessary packages for this project, after cloning the repo, run 
 ```bash
 python -m pip install -e source/BDXR
 ```
+
+```bash
+cd BDX-R-Isaaclab/scripts/rsl_rl/
+```
+
+```bash
+python train.py --task=Bdxr-Velocity-Flat-v0 --headless
+
+```
+
+```bash
+python play.py --task=Bdxr-Velocity-Flat-Play-v0 --num_envs 100
+
+```
+
 ## 🙏 Community and Acknowledgements
 
 This project is a personal learning journey and would not have been possible without the guidance and inspiration from the wider robotics community. A special thank you to:

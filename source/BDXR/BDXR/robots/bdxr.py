@@ -9,6 +9,7 @@ from isaaclab.assets.articulation import ArticulationCfg
 ##
 # Configuration
 ##
+TEMPLATE_ASSETS_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
 BDX_CFG = ArticulationCfg(
     # TODO: Change by the URDF directly by adding in the installation setup, the need to curl
@@ -17,7 +18,7 @@ BDX_CFG = ArticulationCfg(
         fix_base=False,
         merge_fixed_joints=True,
         replace_cylinders_with_capsules=False,
-        asset_path="/home/kayden/Desktop/BDX-R-Description-main/URDF_description/urdf/URDF.urdf",
+        asset_path=f"{TEMPLATE_ASSETS_DATA_DIR}/Robots/BDXR/URDF.urdf",
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,

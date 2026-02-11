@@ -1,0 +1,2124 @@
+<?xml version="1.0" ?>
+<robot name="URDF" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<material name="neon_green">
+  <color rgba="0.22 1.0 0.08 1.0"/>
+</material>
+
+<material name="white">
+  <color rgba="1.0 1.0 1.0 1.0"/>
+</material>
+
+<material name="black">
+  <color rgba="0.0 0.0 0.0 1.0"/>
+</material>
+
+<!-- Define the mesh path here. Change this one line to update all meshes -->
+
+<xacro:include filename="$(find URDF_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find URDF_description)/urdf/URDF.trans" />
+<xacro:include filename="$(find URDF_description)/urdf/URDF.gazebo" />
+
+<link name="base_link">
+  <inertial>
+    <origin xyz="-0.08719704477096235 -3.999399846037971e-05 -0.03423994226335707" rpy="0 0 0"/>
+    <mass value="0.6"/>
+    <inertia ixx="0.042338" iyy="0.058645" izz="0.033168" ixy="7e-05" iyz="3.4e-05" ixz="0.0057"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Hip_Yaw_Motor">
+  <inertial>
+    <origin xyz="0.04521391530670407 -0.018731669621569767 0.02125228248962339" rpy="0 0 0"/>
+    <mass value="0.880"/>
+    <inertia ixx="0.000918" iyy="0.00088" izz="0.001215" ixy="-1e-06" iyz="6e-06" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.148374 -0.068751 -0.024336" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Yaw_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.148374 -0.068751 -0.024336" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Yaw_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Hip_Yaw_Motor">
+  <inertial>
+    <origin xyz="0.04532687839493971 0.018731674514507995 0.021252282487618467" rpy="0 0 0"/>
+    <mass value="0.880"/>
+    <inertia ixx="0.000918" iyy="0.00088" izz="0.001215" ixy="-1e-06" iyz="-6e-06" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.148374 0.068751 -0.024336" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Yaw_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.148374 0.068751 -0.024336" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Yaw_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Neck_Motor">
+  <inertial>
+    <origin xyz="-0.030899464082702152 0.016897847988094114 0.020715370781576578" rpy="0 0 0"/>
+    <mass value="0.405"/>
+    <inertia ixx="0.000222" iyy="0.000313" izz="0.000217" ixy="-1e-06" iyz="-0.0" ixz="2e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.017134 0.01645 -0.044533" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Neck_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.017134 0.01645 -0.044533" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Neck_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Neck">
+  <inertial>
+    <origin xyz="-0.025459416141447498 0.012476197031113925 0.06068163152972565" rpy="0 0 0"/>
+    <mass value="1.3919244642510382"/>
+    <inertia ixx="0.001657" iyy="0.001959" izz="0.001097" ixy="0.000115" iyz="-0.000281" ixz="0.000638"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.01382 0.02045 -0.063875" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Neck.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.01382 0.02045 -0.063875" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Neck.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bottom_Cover">
+  <inertial>
+    <origin xyz="-0.002156952438463311 -0.06300000007591698 0.0009136737179247095" rpy="0 0 0"/>
+    <mass value="0.2325777541774406"/>
+    <inertia ixx="0.000618" iyy="6.5e-05" izz="0.000671" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.075084 -0.063 0.123908" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Bottom_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="white"/>
+  </visual>
+  <collision>
+    <origin xyz="0.075084 -0.063 0.123908" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Bottom_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Hip_Yaw_Support">
+  <inertial>
+    <origin xyz="-0.002427777890313232 -0.029803010884219227 -0.0057760929095164865" rpy="0 0 0"/>
+    <mass value="0.8252087483097528"/>
+    <inertia ixx="0.000485" iyy="0.000326" izz="0.00034" ixy="-1e-05" iyz="7e-06" ixz="3.5e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.045104 0.01775 -0.002892" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Yaw_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.045104 0.01775 -0.002892" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Yaw_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Hip_Yaw_Support">
+  <inertial>
+    <origin xyz="-0.0024644433007056515 0.029603736388163212 -0.005671677346670203" rpy="0 0 0"/>
+    <mass value="0.8129334554771345"/>
+    <inertia ixx="0.000479" iyy="0.000323" izz="0.000336" ixy="1e-05" iyz="-8e-06" ixz="3.4e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.045104 -0.01775 -0.002892" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Yaw_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.045104 -0.01775 -0.002892" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Yaw_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Base_Top_Clamp">
+  <inertial>
+    <origin xyz="0.01157167662453315 0.05999999991889323 0.004830967427440658" rpy="0 0 0"/>
+    <mass value="0.34279762697415633"/>
+    <inertia ixx="0.000471" iyy="8.8e-05" izz="0.000553" ixy="0.0" iyz="-0.0" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.157 0.06 -0.063636" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Base_Top_Clamp.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.157 0.06 -0.063636" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Base_Top_Clamp.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Head_Pitch_Motor">
+  <inertial>
+    <origin xyz="-0.017590787737470047 0.017245843849959197 0.011296815700074514" rpy="0 0 0"/>
+    <mass value="0.242"/>
+    <inertia ixx="6.7e-05" iyy="5.9e-05" izz="6.7e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.061104 0.02611 -0.164106" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Pitch_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.061104 0.02611 -0.164106" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Pitch_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Holder">
+  <inertial>
+    <origin xyz="0.06546457370101699 0.020279720818442315 9.292221895877695e-05" rpy="0 0 0"/>
+    <mass value="0.37776469464112955"/>
+    <inertia ixx="0.000338" iyy="0.001539" izz="0.001296" ixy="-0.000176" iyz="9e-06" ixz="0.000298"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.1581 -0.090997 -0.065042" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.1581 -0.090997 -0.065042" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Top_Base_Frame">
+  <inertial>
+    <origin xyz="0.08765831320754461 -0.08434599939378293 0.008532662178749442" rpy="0 0 0"/>
+    <mass value="0.8850450859385088"/>
+    <inertia ixx="0.005038" iyy="0.003533" izz="0.008543" ixy="0.0" iyz="0.0" ixz="-3.4e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.148285 -0.084346 -0.090657" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Top_Base_Frame.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.148285 -0.084346 -0.090657" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Top_Base_Frame.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Head_Pitch_Motor_Support">
+  <inertial>
+    <origin xyz="-0.008748961512890202 0.014920627572909467 0.04067775286026484" rpy="0 0 0"/>
+    <mass value="0.3978591096412742"/>
+    <inertia ixx="0.000418" iyy="0.00034" izz="0.00018" ixy="1.5e-05" iyz="-6.2e-05" ixz="6.4e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.078605 0.02611 -0.175255" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Pitch_Motor_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.078605 0.02611 -0.175255" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Pitch_Motor_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Head_Yaw_Motor">
+  <inertial>
+    <origin xyz="0.019159681788635863 -0.008113705381133644 -0.017245902968401422" rpy="0 0 0"/>
+    <mass value="0.242"/>
+    <inertia ixx="6.6e-05" iyy="6.7e-05" izz="5.9e-05" ixy="-0.0" iyz="-1e-06" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.096574 -0.000941 -0.249612" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Yaw_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.096574 -0.000941 -0.249612" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Yaw_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Head_Roll_Connector">
+  <inertial>
+    <origin xyz="0.020342845077876093 -4.1823145056560374e-08 0.0034769931797538622" rpy="0 0 0"/>
+    <mass value="0.1909286096033978"/>
+    <inertia ixx="2.8e-05" iyy="7.4e-05" izz="7.2e-05" ixy="-0.0" iyz="0.0" ixz="1.4e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.077404 0.007 -0.249612" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Roll_Connector.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.077404 0.007 -0.249612" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Roll_Connector.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Head_Roll_Motor">
+  <inertial>
+    <origin xyz="0.017246288920139068 -0.00017265347517978792 -1.0383929886254029e-05" rpy="0 0 0"/>
+    <mass value="0.242"/>
+    <inertia ixx="5.9e-05" iyy="6.7e-05" izz="6.6e-05" ixy="1e-06" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.033407 0.007 -0.240612" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Roll_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.033407 0.007 -0.240612" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Roll_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Head_Roll_Motor_Mount">
+  <inertial>
+    <origin xyz="0.015202195484576058 -0.020056972375373537 -0.011798452493393785" rpy="0 0 0"/>
+    <mass value="0.42782888507946565"/>
+    <inertia ixx="0.000227" iyy="0.000133" izz="0.000316" ixy="3e-06" iyz="5e-06" ixz="9e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.033407 -0.01217 -0.232672" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Roll_Motor_Mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.033407 -0.01217 -0.232672" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Roll_Motor_Mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Front_Support">
+  <inertial>
+    <origin xyz="0.002675563632862211 -0.009999999985889884 -0.016526977261899587" rpy="0 0 0"/>
+    <mass value="1.3644492060488889"/>
+    <inertia ixx="0.014288" iyy="0.006674" izz="0.007707" ixy="0.0" iyz="0.0" ixz="7.8e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0112 -0.01 0.005406" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Front_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0112 -0.01 0.005406" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Front_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Cable_Support">
+  <inertial>
+    <origin xyz="-0.00464407019141712 0.01208768916895099 -0.002942995141052583" rpy="0 0 0"/>
+    <mass value="0.4093453218387252"/>
+    <inertia ixx="0.000111" iyy="0.000115" izz="0.000123" ixy="-1.3e-05" iyz="3e-06" ixz="9e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0112 0.092343 -0.029633" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Cable_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0112 0.092343 -0.029633" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Cable_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Head_Base_Plate">
+  <inertial>
+    <origin xyz="-0.03140700566383424 0.02675877413488265 -0.0009997785465086784" rpy="0 0 0"/>
+    <mass value="0.7026538517747032"/>
+    <inertia ixx="0.004481" iyy="0.00289" izz="0.007371" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.031307 0.034552 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Base_Plate.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.031307 0.034552 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Base_Plate.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Eye">
+  <inertial>
+    <origin xyz="0.005266521488282844 0.022107090988212133 0.020791194336308383" rpy="0 0 0"/>
+    <mass value="0.11621842473165622"/>
+    <inertia ixx="4.8e-05" iyy="3e-05" izz="2.6e-05" ixy="-1e-06" iyz="-1e-06" ixz="-3e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.027292 0.091031 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Eye.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.027292 0.091031 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Eye.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Front_Cover">
+  <inertial>
+    <origin xyz="0.03333855327041867 0.10026781053986698 0.03314346935042122" rpy="0 0 0"/>
+    <mass value="3.016585112031044"/>
+    <inertia ixx="0.039575" iyy="0.0241" izz="0.020937" ixy="-0.00014" iyz="-0.000403" ixz="-0.00097"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.006306 0.102243 0.033903" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Front_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="white"/>
+  </visual>
+  <collision>
+    <origin xyz="0.006306 0.102243 0.033903" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Front_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Head_Support">
+  <inertial>
+    <origin xyz="0.011637998093553148 -0.0018817819041148792 0.007323212725077494" rpy="0 0 0"/>
+    <mass value="0.15134820645299715"/>
+    <inertia ixx="5.3e-05" iyy="0.000496" izz="0.000544" ixy="0.000156" iyz="-4e-06" ixz="1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.154585 0.109204 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Head_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.154585 0.109204 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Head_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Front_Cover">
+  <inertial>
+    <origin xyz="0.06371406608435315 0.038104119922451885 0.03733522780273715" rpy="0 0 0"/>
+    <mass value="0.561072854334117"/>
+    <inertia ixx="0.001526" iyy="0.001228" izz="0.002112" ixy="-0.000297" iyz="-0.000419" ixz="-0.000298"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.067451 0.137238 -0.222133" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Front_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.067451 0.137238 -0.222133" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Front_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Eye">
+  <inertial>
+    <origin xyz="0.004305465983342725 -0.022700255663295345 0.021498996985650026" rpy="0 0 0"/>
+    <mass value="0.1126202923319544"/>
+    <inertia ixx="4.7e-05" iyy="2.9e-05" izz="2.4e-05" ixy="2e-06" iyz="2e-06" ixz="-3e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.027292 -0.075445 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Eye.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.027292 -0.075445 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Eye.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Holder">
+  <inertial>
+    <origin xyz="0.06609948580700283 -0.02032523117912352 -0.00047823216167243443" rpy="0 0 0"/>
+    <mass value="0.3779808137618351"/>
+    <inertia ixx="0.000331" iyy="0.001536" izz="0.001298" ixy="0.000176" iyz="-1.1e-05" ixz="0.000301"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.1581 0.090997 -0.065042" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.1581 0.090997 -0.065042" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Head_Support">
+  <inertial>
+    <origin xyz="-0.08389400182812579 -0.027679558737785256 0.007323212722927103" rpy="0 0 0"/>
+    <mass value="0.15134820623495676"/>
+    <inertia ixx="5.3e-05" iyy="0.000496" izz="0.000544" ixy="-0.000156" iyz="4e-06" ixz="1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.059053 -0.12318 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Head_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.059053 -0.12318 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Head_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Front_Cover">
+  <inertial>
+    <origin xyz="0.06404526177304333 -0.039863485997649925 0.036328075039944424" rpy="0 0 0"/>
+    <mass value="0.5492461618694918"/>
+    <inertia ixx="0.001434" iyy="0.001196" izz="0.001996" ixy="0.000261" iyz="0.000401" ixz="-0.000291"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.067651 -0.121453 -0.222133" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Front_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.067651 -0.121453 -0.222133" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Front_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Battery_Holder">
+  <inertial>
+    <origin xyz="-0.011259416276334366 -1.3798384356045059e-08 0.07421425645405398" rpy="0 0 0"/>
+    <mass value="1.2003975073649495"/>
+    <inertia ixx="0.003194" iyy="0.002315" izz="0.000949" ixy="-0.0" iyz="-0.0" ixz="7.7e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.157777 -0.0 0.083128" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Battery_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.157777 -0.0 0.083128" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Battery_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Cable_Support">
+  <inertial>
+    <origin xyz="-0.004644070191416319 -0.01208768916895124 -0.0029429951410525727" rpy="0 0 0"/>
+    <mass value="0.4093453218387253"/>
+    <inertia ixx="0.000111" iyy="0.000115" izz="0.000123" ixy="1.3e-05" iyz="-3e-06" ixz="9e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0112 -0.092343 -0.029633" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Cable_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0112 -0.092343 -0.029633" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Cable_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Battery">
+  <inertial>
+    <origin xyz="-0.03187265490613192 0.027499996948243 -0.04652437688573792" rpy="0 0 0"/>
+    <mass value="7.946971853050029"/>
+    <inertia ixx="0.020895" iyy="0.020316" izz="0.008316" ixy="0.0" iyz="-0.0" ixz="-0.000252"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.181916 0.0278 -0.062202" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Battery.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.181916 0.0278 -0.062202" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Battery.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Back_Support">
+  <inertial>
+    <origin xyz="-0.016338021517123075 0.0008580361176538957 0.07859162736607851" rpy="0 0 0"/>
+    <mass value="1.4345660747046487"/>
+    <inertia ixx="0.007073" iyy="0.003535" izz="0.004743" ixy="6e-06" iyz="-2.5e-05" ixz="0.000348"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.175801 -0.0 0.083128" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Back_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.175801 -0.0 0.083128" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Back_Support.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Rear_Cover">
+  <inertial>
+    <origin xyz="-0.03794240173132701 0.015442933458322853 0.0814395200361534" rpy="0 0 0"/>
+    <mass value="0.4497186658385477"/>
+    <inertia ixx="0.003477" iyy="0.002602" izz="0.002166" ixy="0.0" iyz="-0.0" ixz="0.000505"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.1701 0.014557 0.114984" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Rear_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.1701 0.014557 0.114984" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Rear_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Face">
+  <inertial>
+    <origin xyz="0.011943852998891849 0.12499479733891719 0.028008886798106536" rpy="0 0 0"/>
+    <mass value="0.3825323982770003"/>
+    <inertia ixx="0.00292" iyy="0.000177" izz="0.002764" ixy="-0.0" iyz="-0.0" ixz="-1.2e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.021655 0.1327 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Face.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.021655 0.1327 -0.211177" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Face.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Head_Rear_Cover">
+  <inertial>
+    <origin xyz="0.08331733267288 -0.0827113807216886 0.032305141293038436" rpy="0 0 0"/>
+    <mass value="2.1083250067116728"/>
+    <inertia ixx="0.012409" iyy="0.009472" izz="0.02046" ixy="0.0" iyz="-0.0" ixz="-0.001544"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.219939 -0.07291 -0.225685" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Rear_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.219939 -0.07291 -0.225685" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Head_Rear_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Rear_Head_Plate">
+  <inertial>
+    <origin xyz="0.029815672547195776 -0.03832797900921875 -0.0072363242913547066" rpy="0 0 0"/>
+    <mass value="0.15477666227232548"/>
+    <inertia ixx="0.000437" iyy="6.4e-05" izz="0.000499" ixy="-1e-06" iyz="-2e-06" ixz="7e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.241988 -0.02852 -0.219724" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Rear_Head_Plate.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.241988 -0.02852 -0.219724" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Rear_Head_Plate.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Ear">
+  <inertial>
+    <origin xyz="-0.005811711153872301 -0.015596191586685682 0.011330324454533136" rpy="0 0 0"/>
+    <mass value="0.08364474291031353"/>
+    <inertia ixx="5.7e-05" iyy="5.6e-05" izz="1.3e-05" ixy="-1e-06" iyz="-1.1e-05" ixz="-4e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.204379 0.095672 -0.238444" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Ear.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.204379 0.095672 -0.238444" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Ear.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Ear">
+  <inertial>
+    <origin xyz="-0.005811724239387417 0.015596486363236892 0.011330310579899" rpy="0 0 0"/>
+    <mass value="0.08364465059570073"/>
+    <inertia ixx="5.7e-05" iyy="5.6e-05" izz="1.3e-05" ixy="1e-06" iyz="1.1e-05" ixz="-4e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.204379 -0.076069 -0.238444" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Ear.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.204379 -0.076069 -0.238444" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Ear.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Hip_Top_Holder">
+  <inertial>
+    <origin xyz="0.001620339630348147 0.003199118205156136 -0.011367269424634858" rpy="0 0 0"/>
+    <mass value="0.6080984706410992"/>
+    <inertia ixx="0.000247" iyy="0.000261" izz="0.000411" ixy="-5e-06" iyz="1.1e-05" ixz="2.3e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.103104 -0.05 -0.021836" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Top_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.103104 -0.05 -0.021836" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Top_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Hip_Roll_Motor">
+  <inertial>
+    <origin xyz="-0.021159834492361487 -0.018728479075643942 -0.045226511285539436" rpy="0 0 0"/>
+    <mass value="0.880"/>
+    <inertia ixx="0.001212" iyy="0.000876" izz="0.000914" ixy="-6e-06" iyz="1e-06" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.087604 -0.081251 -0.004562" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Roll_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.087604 -0.081251 -0.004562" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Roll_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Hip_Roll_Connector">
+  <inertial>
+    <origin xyz="0.002335664392586173 0.029320353571005348 9.417102428823515e-05" rpy="0 0 0"/>
+    <mass value="0.28535022457844034"/>
+    <inertia ixx="0.000314" iyy="7e-05" izz="0.000291" ixy="3.6e-05" iyz="-1e-06" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.085104 -0.0625 0.040708" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Roll_Connector.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.085104 -0.0625 0.040708" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Roll_Connector.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Hip_Pitch_Motor">
+  <inertial>
+    <origin xyz="5.6098432924311936e-05 0.023752060752053467 -1.960358445661503e-05" rpy="0 0 0"/>
+    <mass value="0.880"/>
+    <inertia ixx="0.000918" iyy="0.001215" izz="0.00088" ixy="-1e-06" iyz="-6e-06" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.09375 -0.13375 0.039367" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Pitch_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.09375 -0.13375 0.039367" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Pitch_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Upper_Leg">
+  <inertial>
+    <origin xyz="-0.024274386899796982 0.017265275383014395 -0.07879674213161575" rpy="0 0 0"/>
+    <mass value="4.1882983071068365"/>
+    <inertia ixx="0.010775" iyy="0.01718" izz="0.011452" ixy="-0.000235" iyz="-6.7e-05" ixz="-0.003926"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.112502 -0.13625 -0.005903" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Upper_Leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.112502 -0.13625 -0.005903" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Upper_Leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Hip_Bottom_Holder">
+  <inertial>
+    <origin xyz="-0.013282968414174659 -0.026326672892584876 -0.002967894724794959" rpy="0 0 0"/>
+    <mass value="0.44482107671145055"/>
+    <inertia ixx="0.000162" iyy="0.000187" izz="0.000281" ixy="-3e-06" iyz="-3e-06" ixz="-2e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.087604 -0.081251 0.085978" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Bottom_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.087604 -0.081251 0.085978" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Hip_Bottom_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Knee_Motor">
+  <inertial>
+    <origin xyz="0.04547915674534561 0.02125206065064683 0.018346688673824177" rpy="0 0 0"/>
+    <mass value="0.880"/>
+    <inertia ixx="0.00088" iyy="0.001215" izz="0.000918" ixy="6e-06" iyz="-1e-06" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.218515 -0.13625 0.135366" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Knee_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.218515 -0.13625 0.135366" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Knee_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Lower_Leg">
+  <inertial>
+    <origin xyz="0.01228337899144813 -0.021155087740907783 -0.06539085298683191" rpy="0 0 0"/>
+    <mass value="2.8649012995453993"/>
+    <inertia ixx="0.009108" iyy="0.011365" izz="0.003048" ixy="0.000146" iyz="-0.000492" ixz="0.00238"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.173056 -0.13375 0.117076" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Lower_Leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.173056 -0.13375 0.117076" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Lower_Leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Ankle_Cover">
+  <inertial>
+    <origin xyz="-0.027270245946545174 -0.006354271007748602 -0.03249972084160155" rpy="0 0 0"/>
+    <mass value="0.10517582367621381"/>
+    <inertia ixx="5.6e-05" iyy="0.00011" izz="5.6e-05" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.100637 -0.088373 0.214654" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Ankle_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.100637 -0.088373 0.214654" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Ankle_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Ankle_Motor">
+  <inertial>
+    <origin xyz="0.03653438846867732 -0.016897817934434525 -0.007243751472622906" rpy="0 0 0"/>
+    <mass value="0.405"/>
+    <inertia ixx="0.000222" iyy="0.000317" izz="0.000221" ixy="-1e-06" iyz="-1e-06" ixz="4e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.163925 -0.12441 0.241241" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Ankle_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.163925 -0.12441 0.241241" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Ankle_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Foot">
+  <inertial>
+    <origin xyz="0.026140190232641594 -0.004665544761849286 -0.03919202511141026" rpy="0 0 0"/>
+    <mass value="1.8791037125473142"/>
+    <inertia ixx="0.001447" iyy="0.004937" izz="0.004441" ixy="0.000142" iyz="-0.000331" ixz="0.000184"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.127907 -0.12841 0.247154" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Foot.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.127907 -0.12841 0.247154" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Foot.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Foot_Pad">
+  <inertial>
+    <origin xyz="-0.07949973500448938 0.007701291700105098 -0.014067147123335288" rpy="0 0 0"/>
+    <mass value="0.8235307524446849"/>
+    <inertia ixx="0.000118" iyy="0.001881" izz="0.001957" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.021227 -0.102728 0.304692" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Foot_Pad.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.021227 -0.102728 0.304692" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Foot_Pad.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Foot_Cover">
+  <inertial>
+    <origin xyz="-0.053451799495267266 -0.014305764488522194 0.02131127529122606" rpy="0 0 0"/>
+    <mass value="0.2778877451208695"/>
+    <inertia ixx="0.000477" iyy="0.000977" izz="0.000856" ixy="0.000178" iyz="3.8e-05" ixz="6.1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.025271 -0.14191 0.296057" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Foot_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.025271 -0.14191 0.296057" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Foot_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Upper_Leg_Cover">
+  <inertial>
+    <origin xyz="-0.04094111873015039 0.0009368348399820814 0.03898547248219009" rpy="0 0 0"/>
+    <mass value="0.4710868540250967"/>
+    <inertia ixx="0.000665" iyy="0.002193" izz="0.001753" ixy="6.4e-05" iyz="4e-05" ixz="-5.9e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0536 -0.18275 0.069166" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Upper_Leg_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0536 -0.18275 0.069166" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Upper_Leg_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Lower_Leg_Cover">
+  <inertial>
+    <origin xyz="0.06560703572592197 -0.00028822546645815295 -0.02091617740825974" rpy="0 0 0"/>
+    <mass value="0.6798560279056552"/>
+    <inertia ixx="0.000743" iyy="0.002662" izz="0.002147" ixy="6.7e-05" iyz="-2.3e-05" ixz="-0.00039"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.218742 -0.18275 0.106038" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Lower_Leg_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.218742 -0.18275 0.106038" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Lower_Leg_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Upper_Leg_Detail">
+  <inertial>
+    <origin xyz="-0.024382609846147235 -0.001117219617139703 -0.0289948889081118" rpy="0 0 0"/>
+    <mass value="0.0367883220982521"/>
+    <inertia ixx="7e-06" iyy="1.4e-05" izz="7e-06" ixy="-0.0" iyz="0.0" ixz="-6e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.147212 -0.194574 0.02471" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Upper_Leg_Detail.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.147212 -0.194574 0.02471" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Upper_Leg_Detail.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Camera_Mount">
+  <inertial>
+    <origin xyz="-0.006172802438076906 -0.05152638875020519 -0.029338829033211014" rpy="0 0 0"/>
+    <mass value="0.23780328755101082"/>
+    <inertia ixx="0.000378" iyy="0.000119" izz="0.000303" ixy="-1e-06" iyz="-1e-06" ixz="-4e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.055472 -0.05185 -0.067121" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Camera_Mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.055472 -0.05185 -0.067121" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Camera_Mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Front_Grill">
+  <inertial>
+    <origin xyz="0.7853577261782467 -7.976529449557797e-08 0.03431005289568136" rpy="0 0 0"/>
+    <mass value="0.12278343435530116"/>
+    <inertia ixx="0.000159" iyy="5.8e-05" izz="0.000102" ixy="-0.0" iyz="-0.0" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.73149 5e-05 0.096643" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Front_Grill.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.73149 5e-05 0.096643" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Front_Grill.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Rear_Antenna_Box">
+  <inertial>
+    <origin xyz="-0.02263711361821996 0.04955083424974197 -0.008123552746643014" rpy="0 0 0"/>
+    <mass value="0.4309225889234217"/>
+    <inertia ixx="0.001016" iyy="0.000514" izz="0.000582" ixy="-0.0" iyz="-1e-06" ixz="1e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.260006 0.048172 -0.008698" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Rear_Antenna_Box.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.260006 0.048172 -0.008698" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Rear_Antenna_Box.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Hip_Top_Holder">
+  <inertial>
+    <origin xyz="0.0016203396303476614 -0.0031991182051551922 -0.013107269424634851" rpy="0 0 0"/>
+    <mass value="0.6080984706410996"/>
+    <inertia ixx="0.000247" iyy="0.000261" izz="0.000411" ixy="5e-06" iyz="-1.1e-05" ixz="2.3e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.103104 0.05 -0.021836" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Top_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.103104 0.05 -0.021836" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Top_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Hip_Roll_Motor">
+  <inertial>
+    <origin xyz="-0.02115983744229838 -0.018773521351088125 -0.045226514927495506" rpy="0 0 0"/>
+    <mass value="0.880"/>
+    <inertia ixx="0.001212" iyy="0.000876" izz="0.000914" ixy="6e-06" iyz="-1e-06" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.087604 0.043749 -0.002822" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Roll_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.087604 0.043749 -0.002822" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Roll_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Hip_Roll_Connector">
+  <inertial>
+    <origin xyz="0.002335666610867357 -0.029320346006172324 9.417077243262933e-05" rpy="0 0 0"/>
+    <mass value="0.28535016693976095"/>
+    <inertia ixx="0.000314" iyy="7e-05" izz="0.000291" ixy="-3.6e-05" iyz="1e-06" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.085104 0.0625 0.042448" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Roll_Connector.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.085104 0.0625 0.042448" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Roll_Connector.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Hip_Bottom_Holder">
+  <inertial>
+    <origin xyz="-0.013282968414175061 -0.011175327107414403 -0.002967894724794931" rpy="0 0 0"/>
+    <mass value="0.44482107671145044"/>
+    <inertia ixx="0.000162" iyy="0.000187" izz="0.000281" ixy="3e-06" iyz="3e-06" ixz="-2e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.087604 0.043749 0.087718" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Bottom_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.087604 0.043749 0.087718" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Bottom_Holder.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Hip_Pitch_Motor">
+  <inertial>
+    <origin xyz="5.616069849591343e-05 -0.02375185846748501 -1.930368501875529e-05" rpy="0 0 0"/>
+    <mass value="0.880"/>
+    <inertia ixx="0.000918" iyy="0.001215" izz="0.00088" ixy="1e-06" iyz="6e-06" ixz="-1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.09375 0.13375 0.041107" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Pitch_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.09375 0.13375 0.041107" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Hip_Pitch_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Upper_Leg">
+  <inertial>
+    <origin xyz="-0.024280788003814238 -0.01724218437940858 -0.07876915040784153" rpy="0 0 0"/>
+    <mass value="4.188552131228702"/>
+    <inertia ixx="0.01076" iyy="0.017182" izz="0.011445" ixy="0.000229" iyz="6.8e-05" ixz="-0.003927"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.112502 0.13625 -0.004163" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Upper_Leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.112502 0.13625 -0.004163" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Upper_Leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Knee_Motor">
+  <inertial>
+    <origin xyz="0.018309857504870547 -0.02125185844982999 -0.04540224600480196" rpy="0 0 0"/>
+    <mass value="0.880"/>
+    <inertia ixx="0.00088" iyy="0.001215" izz="0.000918" ixy="-6e-06" iyz="1e-06" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.191346 0.13625 0.073357" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Knee_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.191346 0.13625 0.073357" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Knee_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Lower_Leg">
+  <inertial>
+    <origin xyz="0.012283378986732457 0.021155087755956675 -0.06539085299584874" rpy="0 0 0"/>
+    <mass value="2.86490129434894"/>
+    <inertia ixx="0.009108" iyy="0.011365" izz="0.003048" ixy="-0.000146" iyz="0.000492" ixz="0.00238"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.173056 0.13375 0.118816" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Lower_Leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.173056 0.13375 0.118816" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Lower_Leg.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Ankle_Motor">
+  <inertial>
+    <origin xyz="0.0009483882402769872 0.01689783037999794 -0.03782875073492001" rpy="0 0 0"/>
+    <mass value="0.405"/>
+    <inertia ixx="0.000222" iyy="0.000317" izz="0.000221" ixy="1e-06" iyz="1e-06" ixz="4e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.128339 0.12441 0.212396" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Ankle_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.128339 0.12441 0.212396" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Ankle_Motor.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Foot">
+  <inertial>
+    <origin xyz="0.026140190232409544 0.004665544761157922 -0.03919202511095865" rpy="0 0 0"/>
+    <mass value="1.8791037124906536"/>
+    <inertia ixx="0.001447" iyy="0.004937" izz="0.004441" ixy="-0.000142" iyz="0.000331" ixz="0.000184"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.127907 0.12841 0.248894" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Foot.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.127907 0.12841 0.248894" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Foot.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Foot_Pad">
+  <inertial>
+    <origin xyz="-0.07949973500530857 4.481661704247575e-07 -0.012327147151143913" rpy="0 0 0"/>
+    <mass value="0.8235307524446847"/>
+    <inertia ixx="0.000118" iyy="0.001881" izz="0.001957" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.021227 0.110385 0.308172" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Foot_Pad.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.021227 0.110385 0.308172" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Foot_Pad.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Foot_Cover">
+  <inertial>
+    <origin xyz="0.09107013259634836 0.01441065685321713 0.015230989404046102" rpy="0 0 0"/>
+    <mass value="0.27789077678038787"/>
+    <inertia ixx="0.000512" iyy="0.001003" izz="0.000864" ixy="-0.000182" iyz="-4.9e-05" ixz="5.3e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.169659 0.14191 0.291438" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Foot_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.169659 0.14191 0.291438" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Foot_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Upper_Leg_Cover">
+  <inertial>
+    <origin xyz="-0.040941118728582644 -0.0009368348396377457 0.03898547248163051" rpy="0 0 0"/>
+    <mass value="0.47108685403507133"/>
+    <inertia ixx="0.000665" iyy="0.002193" izz="0.001753" ixy="-6.4e-05" iyz="-4e-05" ixz="-5.9e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.0536 0.18275 0.070906" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Upper_Leg_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.0536 0.18275 0.070906" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Upper_Leg_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Lower_Leg_Cover">
+  <inertial>
+    <origin xyz="0.06369106428208968 -0.006050249496385718 -0.01748499012355735" rpy="0 0 0"/>
+    <mass value="0.36564522610609057"/>
+    <inertia ixx="0.0004" iyy="0.001361" izz="0.001071" ixy="-1.4e-05" iyz="2.7e-05" ixz="-0.000208"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.218742 0.18275 0.107778" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Lower_Leg_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.218742 0.18275 0.107778" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Lower_Leg_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Upper_Leg_Detail">
+  <inertial>
+    <origin xyz="-0.022198918666951728 0.0005850710891872057 -0.026977756657009334" rpy="0 0 0"/>
+    <mass value="0.036788321506523086"/>
+    <inertia ixx="7e-06" iyy="1.4e-05" izz="7e-06" ixy="0.0" iyz="-0.0" ixz="-6e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.147212 0.194574 0.02819" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Upper_Leg_Detail.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.147212 0.194574 0.02819" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Upper_Leg_Detail.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Ankle_Cover">
+  <inertial>
+    <origin xyz="0.027270754053454554 0.006354271007749365 0.03249927915839845" rpy="0 0 0"/>
+    <mass value="0.10517582367621385"/>
+    <inertia ixx="5.6e-05" iyy="0.00011" izz="5.6e-05" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.155178 0.088373 0.281393" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Ankle_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="neon_green"/>
+  </visual>
+  <collision>
+    <origin xyz="0.155178 0.088373 0.281393" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Ankle_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Left_Top_Cover">
+  <inertial>
+    <origin xyz="-0.044106804751838535 -0.01009578168435546 0.0004337760046306399" rpy="0 0 0"/>
+    <mass value="0.30626446288176407"/>
+    <inertia ixx="0.000197" iyy="0.000482" izz="0.000427" ixy="4e-06" iyz="6.6e-05" ixz="6e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.04828 -0.098389 -0.086103" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Top_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.04828 -0.098389 -0.086103" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Left_Top_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Right_Top_Cover">
+  <inertial>
+    <origin xyz="-0.0441068047518393 0.010095781684355959 0.00043377600463069543" rpy="0 0 0"/>
+    <mass value="0.3062644628817641"/>
+    <inertia ixx="0.000197" iyy="0.000482" izz="0.000427" ixy="-4e-06" iyz="-6.6e-05" ixz="6e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.04828 0.098389 -0.086103" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Top_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.04828 0.098389 -0.086103" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/Right_Top_Cover.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+
+<link name="imu_mount">
+  <inertial>
+    <origin xyz="0.04550033396618963 -0.031248997046936854 0.00964529459469704" rpy="0 0 0"/>
+    <mass value="0.2546845134769666"/>
+    <inertia ixx="0.000153" iyy="0.000224" izz="0.000359" ixy="0.0" iyz="0.0" ixz="2e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.148374 -0.031249 -0.073636" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/imu_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.148374 -0.031249 -0.073636" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/imu_mount.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="imu">
+  <inertial>
+    <origin xyz="0.007580740591864421 -0.02090000004746809 0.013691712341032822" rpy="0 0 0"/>
+    <mass value="0.14185490318820562"/>
+    <inertia ixx="2.8e-05" iyy="1.8e-05" izz="3.1e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.139724 -0.0209 -0.088636" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/imu.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="black"/>
+  </visual>
+  <collision>
+    <origin xyz="0.139724 -0.0209 -0.088636" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/imu.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Rigid 4" type="fixed">
+  <origin xyz="-0.148374 0.068751 0.024336" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Left_Hip_Yaw_Motor"/>
+</joint>
+
+<joint name="Rigid 5" type="fixed">
+  <origin xyz="-0.148374 -0.068751 0.024336" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Right_Hip_Yaw_Motor"/>
+</joint>
+
+<joint name="Rigid 6" type="fixed">
+  <origin xyz="0.017134 -0.01645 0.044533" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Neck_Motor"/>
+</joint>
+
+<joint name="Neck_Pitch" type="revolute">
+  <origin xyz="-0.030954 -0.004 0.019342" rpy="0 0 0"/>
+  <parent link="Neck_Motor"/>
+  <child link="Neck"/>
+  <axis xyz="0.0 1.0 -0.0"/>
+  <limit lower="-0.3490658503988659" upper="0.8726646259971648" effort="17.0" velocity="43.0"/>
+</joint>
+
+<joint name="Rigid 8" type="fixed">
+  <origin xyz="-0.075084 0.063 -0.123908" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Bottom_Cover"/>
+</joint>
+
+<joint name="Rigid 9" type="fixed">
+  <origin xyz="-0.045104 -0.01775 0.002892" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Right_Hip_Yaw_Support"/>
+</joint>
+
+<joint name="Rigid 10" type="fixed">
+  <origin xyz="-0.045104 0.01775 0.002892" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Left_Hip_Yaw_Support"/>
+</joint>
+
+<joint name="Rigid 11" type="fixed">
+  <origin xyz="-0.157 -0.06 0.063636" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Base_Top_Clamp"/>
+</joint>
+
+<joint name="Rigid 12" type="fixed">
+  <origin xyz="-0.047284 -0.00566 0.100231" rpy="0 0 0"/>
+  <parent link="Neck"/>
+  <child link="Head_Pitch_Motor"/>
+</joint>
+
+<joint name="Rigid 13" type="fixed">
+  <origin xyz="-0.1581 0.090997 0.065042" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Left_Holder"/>
+</joint>
+
+<joint name="Rigid 14" type="fixed">
+  <origin xyz="-0.148285 0.084346 0.090657" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Top_Base_Frame"/>
+</joint>
+
+<joint name="Head_Pitch" type="revolute">
+  <origin xyz="-0.017501 0.0 0.011149" rpy="0 0 0"/>
+  <parent link="Head_Pitch_Motor"/>
+  <child link="Head_Pitch_Motor_Support"/>
+  <axis xyz="0.0 1.0 0.0"/>
+  <limit lower="-1.0471975511965976" upper="0.8726646259971648" effort="6.0" velocity="45.0"/>
+</joint>
+
+<joint name="Rigid 16" type="fixed">
+  <origin xyz="-0.017969 0.027051 0.074357" rpy="0 0 0"/>
+  <parent link="Head_Pitch_Motor_Support"/>
+  <child link="Head_Yaw_Motor"/>
+</joint>
+
+<joint name="Head_Yaw" type="revolute">
+  <origin xyz="0.01917 -0.007941 0.0" rpy="0 0 0"/>
+  <parent link="Head_Yaw_Motor"/>
+  <child link="Head_Roll_Connector"/>
+  <axis xyz="0.0 0.0 -1.0"/>
+  <limit lower="-0.8726646259971648" upper="0.8726646259971648" effort="6.0" velocity="45.0"/>
+</joint>
+
+<joint name="Head_Roll" type="revolute">
+  <origin xyz="0.043997 0.0 -0.009" rpy="0 0 0"/>
+  <parent link="Head_Roll_Connector"/>
+  <child link="Head_Roll_Motor"/>
+  <axis xyz="-1.0 0.0 0.0"/>
+  <limit lower="-0.5235987755982988" upper="0.5235987755982988" effort="6.0" velocity="45.0"/>
+</joint>
+
+<joint name="Rigid 19" type="fixed">
+  <origin xyz="0.0 0.01917 -0.00794" rpy="0 0 0"/>
+  <parent link="Head_Roll_Motor"/>
+  <child link="Head_Roll_Motor_Mount"/>
+</joint>
+
+<joint name="Rigid 20" type="fixed">
+  <origin xyz="-0.0112 0.01 -0.005406" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Front_Support"/>
+</joint>
+
+<joint name="Rigid 21" type="fixed">
+  <origin xyz="0.0 -0.102343 0.035039" rpy="0 0 0"/>
+  <parent link="Front_Support"/>
+  <child link="Right_Cable_Support"/>
+</joint>
+
+<joint name="Rigid 22" type="fixed">
+  <origin xyz="0.0021 -0.046722 -0.021495" rpy="0 0 0"/>
+  <parent link="Head_Roll_Motor_Mount"/>
+  <child link="Head_Base_Plate"/>
+</joint>
+
+<joint name="Rigid 23" type="fixed">
+  <origin xyz="0.058599 -0.056479 0.0" rpy="0 0 0"/>
+  <parent link="Head_Base_Plate"/>
+  <child link="Right_Eye"/>
+</joint>
+
+<joint name="Rigid 24" type="fixed">
+  <origin xyz="0.004894 -0.112243 -0.028497" rpy="0 0 0"/>
+  <parent link="Front_Support"/>
+  <child link="Front_Cover"/>
+</joint>
+
+<joint name="Rigid 25" type="fixed">
+  <origin xyz="-0.123278 -0.074652 0.0" rpy="0 0 0"/>
+  <parent link="Head_Base_Plate"/>
+  <child link="Right_Head_Support"/>
+</joint>
+
+<joint name="Rigid 26" type="fixed">
+  <origin xyz="0.087134 -0.028034 0.010956" rpy="0 0 0"/>
+  <parent link="Right_Head_Support"/>
+  <child link="Right_Front_Cover"/>
+</joint>
+
+<joint name="Rigid 27" type="fixed">
+  <origin xyz="0.058599 0.109997 0.0" rpy="0 0 0"/>
+  <parent link="Head_Base_Plate"/>
+  <child link="Left_Eye"/>
+</joint>
+
+<joint name="Rigid 28" type="fixed">
+  <origin xyz="-0.1581 -0.090997 0.065042" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Right_Holder"/>
+</joint>
+
+<joint name="Rigid 29" type="fixed">
+  <origin xyz="-0.027746 0.157732 0.0" rpy="0 0 0"/>
+  <parent link="Head_Base_Plate"/>
+  <child link="Left_Head_Support"/>
+</joint>
+
+<joint name="Rigid 30" type="fixed">
+  <origin xyz="-0.008598 -0.001727 0.010956" rpy="0 0 0"/>
+  <parent link="Left_Head_Support"/>
+  <child link="Left_Front_Cover"/>
+</joint>
+
+<joint name="Rigid 31" type="fixed">
+  <origin xyz="-0.157777 0.0 -0.083128" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Battery_Holder"/>
+</joint>
+
+<joint name="Rigid 32" type="fixed">
+  <origin xyz="0.0 0.082343 0.035039" rpy="0 0 0"/>
+  <parent link="Front_Support"/>
+  <child link="Left_Cable_Support"/>
+</joint>
+
+<joint name="Rigid 33" type="fixed">
+  <origin xyz="-0.024139 -0.0278 0.14533" rpy="0 0 0"/>
+  <parent link="Battery_Holder"/>
+  <child link="Battery"/>
+</joint>
+
+<joint name="Rigid 34" type="fixed">
+  <origin xyz="-0.018024 0.0 0.0" rpy="0 0 0"/>
+  <parent link="Battery_Holder"/>
+  <child link="Back_Support"/>
+</joint>
+
+<joint name="Rigid 35" type="fixed">
+  <origin xyz="0.005701 -0.014557 -0.031856" rpy="0 0 0"/>
+  <parent link="Back_Support"/>
+  <child link="Rear_Cover"/>
+</joint>
+
+<joint name="Rigid 36" type="fixed">
+  <origin xyz="0.052962 -0.098148 0.0" rpy="0 0 0"/>
+  <parent link="Head_Base_Plate"/>
+  <child link="Face"/>
+</joint>
+
+<joint name="Rigid 37" type="fixed">
+  <origin xyz="-0.160886 -0.05027 0.014508" rpy="0 0 0"/>
+  <parent link="Left_Head_Support"/>
+  <child link="Head_Rear_Cover"/>
+</joint>
+
+<joint name="Rigid 38" type="fixed">
+  <origin xyz="-0.022049 -0.04439 -0.005961" rpy="0 0 0"/>
+  <parent link="Head_Rear_Cover"/>
+  <child link="Rear_Head_Plate"/>
+</joint>
+
+<joint name="Rigid 39" type="fixed">
+  <origin xyz="0.01556 -0.168582 0.012759" rpy="0 0 0"/>
+  <parent link="Head_Rear_Cover"/>
+  <child link="Right_Ear"/>
+</joint>
+
+<joint name="Rigid 40" type="fixed">
+  <origin xyz="0.01556 0.003159 0.012759" rpy="0 0 0"/>
+  <parent link="Head_Rear_Cover"/>
+  <child link="Left_Ear"/>
+</joint>
+
+<joint name="Left_Hip_Yaw" type="revolute">
+  <origin xyz="0.04527 -0.018751 -0.0025" rpy="0 0 0"/>
+  <parent link="Left_Hip_Yaw_Motor"/>
+  <child link="Left_Hip_Top_Holder"/>
+  <axis xyz="0.0 0.0 1.0"/>
+  <limit lower="-0.2617993877991494" upper="0.2617993877991494" effort="60.0" velocity="20.0"/>
+</joint>
+
+<joint name="Rigid 42" type="fixed">
+  <origin xyz="0.0155 0.031251 -0.017274" rpy="0 0 0"/>
+  <parent link="Left_Hip_Top_Holder"/>
+  <child link="Left_Hip_Roll_Motor"/>
+</joint>
+
+<joint name="Left_Hip_Roll" type="revolute">
+  <origin xyz="0.0025 -0.018751 -0.04527" rpy="0 0 0"/>
+  <parent link="Left_Hip_Roll_Motor"/>
+  <child link="Left_Hip_Roll_Connector"/>
+  <axis xyz="1.0 0.0 -0.0"/>
+  <limit lower="-0.3490658503988659" upper="0.2617993877991494" effort="60.0" velocity="20.0"/>
+</joint>
+
+<joint name="Left_Hip_Pitch" type="revolute">
+  <origin xyz="-0.008646 0.07125 0.001341" rpy="0 0 0"/>
+  <parent link="Left_Hip_Roll_Connector"/>
+  <child link="Left_Hip_Pitch_Motor"/>
+  <axis xyz="-0.0 1.0 -0.0"/>
+  <limit lower="-0.6981317007977318" upper="1.0471975511965976" effort="60.0" velocity="20.0"/>
+</joint>
+
+<joint name="Rigid 45" type="fixed">
+  <origin xyz="-0.018752 0.0025 0.04527" rpy="0 0 0"/>
+  <parent link="Left_Hip_Pitch_Motor"/>
+  <child link="Left_Upper_Leg"/>
+</joint>
+
+<joint name="Rigid 46" type="fixed">
+  <origin xyz="0.0 0.0 -0.09054" rpy="0 0 0"/>
+  <parent link="Left_Hip_Roll_Motor"/>
+  <child link="Left_Hip_Bottom_Holder"/>
+</joint>
+
+<joint name="Rigid 47" type="fixed">
+  <origin xyz="-0.106013 0.0 -0.141269" rpy="0 0 0"/>
+  <parent link="Left_Upper_Leg"/>
+  <child link="Left_Knee_Motor"/>
+</joint>
+
+<joint name="Left_Knee" type="revolute">
+  <origin xyz="0.045459 -0.0025 0.01829" rpy="0 0 0"/>
+  <parent link="Left_Knee_Motor"/>
+  <child link="Left_Lower_Leg"/>
+  <axis xyz="0.0 -1.0 0.0"/>
+  <limit lower="-1.3089969389957472" upper="0.9599310885968813" effort="60.0" velocity="20.0"/>
+</joint>
+
+<joint name="Rigid 49" type="fixed">
+  <origin xyz="0.072419 -0.045377 -0.097578" rpy="0 0 0"/>
+  <parent link="Left_Lower_Leg"/>
+  <child link="Left_Ankle_Cover"/>
+</joint>
+
+<joint name="Rigid 50" type="fixed">
+  <origin xyz="0.009131 -0.00934 -0.124165" rpy="0 0 0"/>
+  <parent link="Left_Lower_Leg"/>
+  <child link="Left_Ankle_Motor"/>
+</joint>
+
+<joint name="Left_Ankle" type="revolute">
+  <origin xyz="0.036018 0.004 -0.005913" rpy="0 0 0"/>
+  <parent link="Left_Ankle_Motor"/>
+  <child link="Left_Foot"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+  <limit lower="-0.785" upper="1.2217304763960306" effort="17.0" velocity="43.0"/>
+</joint>
+
+<joint name="Rigid 52" type="fixed">
+  <origin xyz="0.10668 -0.025682 -0.057538" rpy="0 0 0"/>
+  <parent link="Left_Foot"/>
+  <child link="Left_Foot_Pad"/>
+</joint>
+
+<joint name="Rigid 53" type="fixed">
+  <origin xyz="0.102636 0.0135 -0.048903" rpy="0 0 0"/>
+  <parent link="Left_Foot"/>
+  <child link="Left_Foot_Cover"/>
+</joint>
+
+<joint name="Rigid 54" type="fixed">
+  <origin xyz="0.058902 0.0465 -0.075069" rpy="0 0 0"/>
+  <parent link="Left_Upper_Leg"/>
+  <child link="Left_Upper_Leg_Cover"/>
+</joint>
+
+<joint name="Rigid 55" type="fixed">
+  <origin xyz="-0.10624 0.0465 -0.111941" rpy="0 0 0"/>
+  <parent link="Left_Upper_Leg"/>
+  <child link="Left_Lower_Leg_Cover"/>
+</joint>
+
+<joint name="Rigid 56" type="fixed">
+  <origin xyz="-0.093612 0.011824 0.044456" rpy="0 0 0"/>
+  <parent link="Left_Upper_Leg_Cover"/>
+  <child link="Left_Upper_Leg_Detail"/>
+</joint>
+
+<joint name="Rigid 57" type="fixed">
+  <origin xyz="0.061778 0.154093 0.101024" rpy="0 0 0"/>
+  <parent link="Front_Cover"/>
+  <child link="Camera_Mount"/>
+</joint>
+
+<joint name="Rigid 58" type="fixed">
+  <origin xyz="-0.725184 0.102193 -0.06274" rpy="0 0 0"/>
+  <parent link="Front_Cover"/>
+  <child link="Front_Grill"/>
+</joint>
+
+<joint name="Rigid 59" type="fixed">
+  <origin xyz="-0.089906 -0.033615 0.123682" rpy="0 0 0"/>
+  <parent link="Rear_Cover"/>
+  <child link="Rear_Antenna_Box"/>
+</joint>
+
+<joint name="Right_Hip_Yaw" type="revolute">
+  <origin xyz="0.04527 0.018751 -0.0025" rpy="0 0 0"/>
+  <parent link="Right_Hip_Yaw_Motor"/>
+  <child link="Right_Hip_Top_Holder"/>
+  <axis xyz="0.0 0.0 1.0"/>
+  <limit lower="-0.2617993877991494" upper="0.2617993877991494" effort="60.0" velocity="20.0"/>
+</joint>
+
+<joint name="Rigid 61" type="fixed">
+  <origin xyz="0.0155 0.006251 -0.019014" rpy="0 0 0"/>
+  <parent link="Right_Hip_Top_Holder"/>
+  <child link="Right_Hip_Roll_Motor"/>
+</joint>
+
+<joint name="Right_Hip_Roll" type="revolute">
+  <origin xyz="0.0025 -0.018751 -0.04527" rpy="0 0 0"/>
+  <parent link="Right_Hip_Roll_Motor"/>
+  <child link="Right_Hip_Roll_Connector"/>
+  <axis xyz="-1.0 0.0 0.0"/>
+  <limit lower="-0.3490658503988659" upper="0.2617993877991494" effort="60.0" velocity="20.0"/>
+</joint>
+
+<joint name="Rigid 63" type="fixed">
+  <origin xyz="0.0 0.0 -0.09054" rpy="0 0 0"/>
+  <parent link="Right_Hip_Roll_Motor"/>
+  <child link="Right_Hip_Bottom_Holder"/>
+</joint>
+
+<joint name="Right_Hip_Pitch" type="revolute">
+  <origin xyz="-0.008646 -0.07125 0.001341" rpy="0 0 0"/>
+  <parent link="Right_Hip_Roll_Connector"/>
+  <child link="Right_Hip_Pitch_Motor"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+  <limit lower="-1.0471975511965976" upper="0.6981317007977318" effort="60.0" velocity="20.0"/>
+</joint>
+
+<joint name="Rigid 65" type="fixed">
+  <origin xyz="-0.018752 -0.0025 0.04527" rpy="0 0 0"/>
+  <parent link="Right_Hip_Pitch_Motor"/>
+  <child link="Right_Upper_Leg"/>
+</joint>
+
+<joint name="Rigid 66" type="fixed">
+  <origin xyz="-0.078844 0.0 -0.07752" rpy="0 0 0"/>
+  <parent link="Right_Upper_Leg"/>
+  <child link="Right_Knee_Motor"/>
+</joint>
+
+<joint name="Right_Knee" type="revolute">
+  <origin xyz="0.01829 0.0025 -0.045459" rpy="0 0 0"/>
+  <parent link="Right_Knee_Motor"/>
+  <child link="Right_Lower_Leg"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+  <limit lower="-1.3089969389957472" upper="0.9599310885968813" effort="60.0" velocity="20.0"/>
+</joint>
+
+<joint name="Rigid 68" type="fixed">
+  <origin xyz="0.044717 0.00934 -0.09358" rpy="0 0 0"/>
+  <parent link="Right_Lower_Leg"/>
+  <child link="Right_Ankle_Motor"/>
+</joint>
+
+<joint name="Right_Ankle" type="revolute">
+  <origin xyz="0.000432 -0.004 -0.036498" rpy="0 0 0"/>
+  <parent link="Right_Ankle_Motor"/>
+  <child link="Right_Foot"/>
+  <axis xyz="0.0 -1.0 0.0"/>
+  <limit lower="-0.785" upper="1.2217304763960306" effort="17.0" velocity="43.0"/>
+</joint>
+
+<joint name="Rigid 70" type="fixed">
+  <origin xyz="0.10668 0.018025 -0.059278" rpy="0 0 0"/>
+  <parent link="Right_Foot"/>
+  <child link="Right_Foot_Pad"/>
+</joint>
+
+<joint name="Rigid 71" type="fixed">
+  <origin xyz="-0.041752 -0.0135 -0.042544" rpy="0 0 0"/>
+  <parent link="Right_Foot"/>
+  <child link="Right_Foot_Cover"/>
+</joint>
+
+<joint name="Rigid 72" type="fixed">
+  <origin xyz="0.058902 -0.0465 -0.075069" rpy="0 0 0"/>
+  <parent link="Right_Upper_Leg"/>
+  <child link="Right_Upper_Leg_Cover"/>
+</joint>
+
+<joint name="Rigid 73" type="fixed">
+  <origin xyz="-0.10624 -0.0465 -0.111941" rpy="0 0 0"/>
+  <parent link="Right_Upper_Leg"/>
+  <child link="Right_Lower_Leg_Cover"/>
+</joint>
+
+<joint name="Rigid 74" type="fixed">
+  <origin xyz="-0.093612 -0.011824 0.042716" rpy="0 0 0"/>
+  <parent link="Right_Upper_Leg_Cover"/>
+  <child link="Right_Upper_Leg_Detail"/>
+</joint>
+
+<joint name="Rigid 75" type="fixed">
+  <origin xyz="0.017878 0.045377 -0.162577" rpy="0 0 0"/>
+  <parent link="Right_Lower_Leg"/>
+  <child link="Right_Ankle_Cover"/>
+</joint>
+
+<joint name="Rigid 76" type="fixed">
+  <origin xyz="0.100005 0.014043 -0.004554" rpy="0 0 0"/>
+  <parent link="Top_Base_Frame"/>
+  <child link="Left_Top_Cover"/>
+</joint>
+
+<joint name="Rigid 77" type="fixed">
+  <origin xyz="0.100005 -0.182735 -0.004554" rpy="0 0 0"/>
+  <parent link="Top_Base_Frame"/>
+  <child link="Right_Top_Cover"/>
+</joint>
+
+<joint name="Rigid 78" type="fixed">
+  <origin xyz="0.008626 0.091249 0.01" rpy="0 0 0"/>
+  <parent link="Base_Top_Clamp"/>
+  <child link="imu_mount"/>
+</joint>
+
+<joint name="Rigid 79" type="fixed">
+  <origin xyz="0.00865 -0.010349 0.015" rpy="0 0 0"/>
+  <parent link="imu_mount"/>
+  <child link="imu"/>
+</joint>
+
+</robot>

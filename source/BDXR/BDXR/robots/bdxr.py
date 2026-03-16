@@ -1,7 +1,4 @@
 from pathlib import Path
-
-TEMPLATE_ASSETS_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
-
 import isaaclab.sim as sim_utils
 from isaaclab.actuators import ImplicitActuatorCfg, DelayedPDActuatorCfg # noqa: F401
 from isaaclab.assets.articulation import ArticulationCfg
@@ -9,16 +6,17 @@ from isaaclab.assets.articulation import ArticulationCfg
 ##
 # Configuration
 ##
-TEMPLATE_ASSETS_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
-BDX_CFG = ArticulationCfg(
-    # TODO: Change by the URDF directly by adding in the installation setup, the need to curl
-    # It will reduce the weight of this repository
+# Dynamically get the directory where this bdxr.py script is located
+BDXR_ASSETS_DIR = Path(__file__).resolve().parent
+
+BDX_R_CFG = ArticulationCfg(
     spawn=sim_utils.UrdfFileCfg(
         fix_base=False,
         merge_fixed_joints=True,
         replace_cylinders_with_capsules=False,
-        asset_path=f"{TEMPLATE_ASSETS_DATA_DIR}/Robots/BDXR/URDF.urdf",
+        # Now it properly points to the URDF.urdf in the exact same directory
+        asset_path=str(Path(__file__).resolve().parents[2] / "data/Robots/BDXR/URDF.urdf"),
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
@@ -42,20 +40,19 @@ BDX_CFG = ArticulationCfg(
     actuators={
         "legs": DelayedPDActuatorCfg(
             joint_names_expr=[".*_Hip_Yaw", ".*_Hip_Roll", ".*_Hip_Pitch", ".*_Knee", ".*_Ankle"],
-            # ... (all leg parameters remain unchanged)
             stiffness={
-                ".*_Hip_Yaw": 78.0,
-                ".*_Hip_Roll": 78.0,
-                ".*_Hip_Pitch": 78.0,
-                ".*_Knee": 78.0,
-                ".*_Ankle": 17.0,
+                ".*_Hip_Yaw": 78.957,
+                ".*_Hip_Roll": 78.957,
+                ".*_Hip_Pitch": 78.957,
+                ".*_Knee": 78.957,
+                ".*_Ankle": 16.581,
             },
             damping={
-                ".*_Hip_Yaw": 5.0,
-                ".*_Hip_Roll": 5.0,
-                ".*_Hip_Pitch": 5.0,
-                ".*_Knee": 5.0,
-                ".*_Ankle": 1.0,
+                ".*_Hip_Yaw": 5.027,
+                ".*_Hip_Roll": 5.027,
+                ".*_Hip_Pitch": 5.027,
+                ".*_Knee": 5.027,
+                ".*_Ankle": 1.056,
             },
             armature={
                 ".*_Hip_Yaw": 0.02,
@@ -79,48 +76,9 @@ BDX_CFG = ArticulationCfg(
                 ".*_Ankle": 37.699,
             },
             min_delay=0,
-            max_delay=4
+            max_delay=0
         ),
-        # -- START OF NEW SECTION --
-        "head": DelayedPDActuatorCfg(
-            joint_names_expr=["Neck_Pitch", "Head_Pitch", "Head_Yaw", "Head_Roll"],
-            stiffness={
-                "Neck_Pitch": 17.0,
-                "Head_Pitch": 2.76,
-                "Head_Yaw": 2.76,
-                "Head_Roll": 2.76,
-            },
-            damping={
-                "Neck_Pitch": 1.0,
-                "Head_Pitch": 0.176,
-                "Head_Yaw": 0.176,
-                "Head_Roll": 0.176,
-            },
-            armature={
-                "Neck_Pitch": 0.0042,
-                "Head_Pitch": 0.0007,
-                "Head_Yaw": 0.0007,
-                "Head_Roll": 0.0007,
-            },
-            effort_limit_sim={      # These values should come from your URDF file
-                "Neck_Pitch": 11.9,
-                "Head_Pitch": 4.2,
-                "Head_Yaw": 4.2,
-                "Head_Roll": 4.2,
-            },
-            velocity_limit_sim={    # These values should come from your URDF file
-                "Neck_Pitch": 43.0,
-                "Head_Pitch": 45.0,
-                "Head_Yaw": 45.0,
-                "Head_Roll": 45.0,
-            },
-            min_delay=0,
-            max_delay=4
-        ),
-        # -- END OF NEW SECTION --
     },
     soft_joint_pos_limit_factor=0.95,
 )
 """Configuration for the Disney BD-X robot with implicit actuator model."""
-
-# TODO: Add dynamic scaling

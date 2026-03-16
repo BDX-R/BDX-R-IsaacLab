@@ -1,1 +1,1 @@
-from .bdxr import BDX_CFG # noqa: F401
+from .bdxr import BDX_R_CFG # noqa: F401
